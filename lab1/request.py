@@ -1,6 +1,6 @@
 from struct import pack, unpack
 
-STUDENT_ID = 822
+STUDENT_ID = 256
 
 class Header:
     def __init__(self, payload_len, psecret, step):
@@ -17,10 +17,10 @@ class Request:
         self.header: Header = None
         self.payload: bytes = b""
 
-    # payload is type bytes literal
-    def add_payload(self, payload: bytes):
+
+    def add_payload(self, payload: bytes, size: int):
         self.payload = payload
-        self.header.payload_len = len(payload) + 1
+        self.header.payload_len = size
 
     def add_header(self, header):
         self.header = header
@@ -31,4 +31,11 @@ class Request:
         # H means unsigned short
         header_bytes = pack('!IIHH', self.header.payload_len, self.header.psecret, self.header.step, self.header.sid_checksum)
         payload_bytes = pack(f'!{self.header.payload_len}s', self.payload)
-        return header_bytes + payload_bytes
+
+        # print(list(header_bytes))
+        # print(list(payload_bytes))
+
+        ret =  header_bytes + payload_bytes
+
+        # print(list(ret))
+        return ret
