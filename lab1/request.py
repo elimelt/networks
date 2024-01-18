@@ -18,9 +18,9 @@ class Request:
         self.payload: bytes = b""
 
 
-    def add_payload(self, payload: bytes, size: int):
+    def add_payload(self, payload: bytes):
         self.payload = payload
-        self.header.payload_len = size
+        self.header.payload_len = len(payload)
 
     def add_header(self, header):
         self.header = header
