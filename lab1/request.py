@@ -1,6 +1,7 @@
 from struct import pack, unpack
+from math import ceil
 
-STUDENT_ID = 256
+STUDENT_ID = 822
 
 class Header:
     def __init__(self, payload_len, psecret, step):
@@ -17,10 +18,9 @@ class Request:
         self.header: Header = None
         self.payload: bytes = b""
 
-
-    def add_payload(self, payload: bytes, size: int):
+    # payload is type bytes literal
+    def add_payload(self, payload: bytes):
         self.payload = payload
-        self.header.payload_len = size
 
     def add_header(self, header):
         self.header = header
@@ -31,11 +31,5 @@ class Request:
         # H means unsigned short
         header_bytes = pack('!IIHH', self.header.payload_len, self.header.psecret, self.header.step, self.header.sid_checksum)
         payload_bytes = pack(f'!{self.header.payload_len}s', self.payload)
-
-        # print(list(header_bytes))
-        # print(list(payload_bytes))
-
-        ret =  header_bytes + payload_bytes
-
-        # print(list(ret))
-        return ret
+        padding = pack(f'!{self.header.payload_len % 4}s', b'\x00'* (self.header.payload_len % 4))
+        return header_bytes + payload_bytes + padding
