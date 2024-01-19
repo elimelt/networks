@@ -1,5 +1,6 @@
 import socket
 from request import Request, Header
+from util import validate_response
 from struct import pack, unpack
 from math import ceil
 import time
@@ -27,8 +28,7 @@ def stage_a() -> tuple[int, int, int, int]:
 
     header = response[:12]
     payload = response[12:]
-    a, b, c, d = unpack("!IIHH", header)
-    print(a, b, c, d)
+    validate_response(header)
 
     num, len_b, udp_port_a, secretA = unpack('!IIII', payload)
 
@@ -60,6 +60,7 @@ def stage_b(num: int, length: int, udp_port: int, secretA: int) -> tuple[int, in
 
         sock.sendto(msg, (udp_host, udp_port))
         ack_response = sock.recv(16)
+        validate_response(ack_response[:12])
         while not ack_response:
             time.sleep(1)
             print("trying again")
@@ -77,7 +78,7 @@ def stage_b(num: int, length: int, udp_port: int, secretA: int) -> tuple[int, in
 if __name__ == '__main__':
     numB, lenB, udp_port_a, secretA = stage_a()
     print("finished stage a")
+    print()
     print(numB, lenB, udp_port_a, secretA)
-    # print(f'found port {udp_port_a}')
     TCP_port, secretB = stage_b(numB, lenB, udp_port_a, secretA)
     print("finished stage b")
