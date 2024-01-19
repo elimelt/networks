@@ -38,15 +38,15 @@ def stage_b(num: int, length: int, udp_port: int, secretA: int) -> tuple[int, in
     header = Header(length + 4, secretA, 1)
 
     sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-    # sock.settimeout(1)
+    sock.settimeout(1)
     udp_host = "attu2.cs.washington.edu"
 
     def create_payload_bytes(id, payload, payload_length):
         return pack(f"!I{payload_length}s", id, payload)
 
     print(f'sending {num} requests to {udp_port}')
-
-    for packet_id in range(num):
+    packet_id = 0
+    while packet_id < num:
         req = Request()
         payload = b'\x00' * length
         req.add_header(header)
@@ -58,20 +58,25 @@ def stage_b(num: int, length: int, udp_port: int, secretA: int) -> tuple[int, in
         print("content", list(msg)[12:])
         print(len(msg))
 
-        sock.sendto(msg, (udp_host, udp_port))
-        ack_response = sock.recv(16)
-        validate_response(ack_response[:12])
-        while not ack_response:
-            time.sleep(1)
-            print("trying again")
-            ack_response = sock.recv(16)
-        unpacked_ack_response = unpack('!I', ack_response[12:])
-        print("response", list(unpacked_ack_response))
+        acked = False
+        response = None
+        while not acked:
+            try:
+                sock.sendto(msg, (udp_host,udp_port))
+                response = sock.recv(28)
+                validate_response(response[:12])
+                acked = True
+            except socket.timeout:
+                print("timeout")
+                continue
+
+        packet_id += 1
 
     #  TCP port number, secretB.
     response = sock.recv(20)
+    validate_response(response[:12])
     TCP_port, secretB = unpack('!II', response[12:])
-
+    print(TCP_port, secretB)
     return TCP_port, secretB
 
 
