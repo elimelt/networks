@@ -77,7 +77,7 @@ def stage_b(num: int, length: int, udp_port: int, secretA: int) -> tuple[int, in
 
     return TCP_port, secretB
 
-def stage_c(TCP_port: int, secretB: int):
+def stage_c(TCP_port: int, secretB: int) -> tuple[int, int, int, str]:
 
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -91,7 +91,20 @@ def stage_c(TCP_port: int, secretB: int):
 
     return num2, len2, secretC, c
 
-# def stage_d(num2: int, len2: int, )
+# def stage_d(num2: int, len2: int, secretC: int, c: str) -> int: 
+#     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+#     sock.connect((HOST, TCP_port))
+#     response = sock.recv(25)
+#     header = Header(len2, secretC, 1)
+
+#     # send num2 packets of len2 filled with char c
+#     validate_response(response[:12])
+
+#     secretD = unpack('!I', response[12:])
+#     sock.close()
+
+#     return secretD
+
 
 if __name__ == '__main__':
     numB, lenB, udp_port_a, secretA = stage_a()
