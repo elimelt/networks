@@ -1,11 +1,14 @@
 from struct import pack, unpack
 
 # takes in header
-def validate_response(header):
+def validate_response(header, silent=False):
     payload_len, psecret, step, num = unpack('!IIHH', header)
     if step != 2:
-        print("bad response:", payload_len, psecret, step, num)
+        if not silent:
+            print("bad response:", payload_len, psecret, step, num)
+        return False
     else:
-        print("response validated")
-
+        if not silent:
+            print("response validated")
+        return True
 
