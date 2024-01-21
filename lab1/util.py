@@ -1,21 +1,12 @@
-from struct import pack, unpack
+import socket
 import logging
-
-# takes in header
-def validate_header(header, silent=False):
-    payload_len, psecret, step, num = unpack('!IIHH', header)
-    if step != 2:
-        if not silent:
-            print("bad response:", payload_len, psecret, step, num)
-        return False
-    else:
-        if not silent:
-            print("response validated")
-        return True
+from request import Request, Header
+from datetime import datetime
+from struct import pack, unpack
 
 
 
-LOG_TO_FILE = False
+LOG_TO_FILE = True
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -37,3 +28,36 @@ if LOG_TO_FILE:
 
 def log(s):
     logger.info(s)
+
+
+
+# takes in header
+def validate_header(header, silent=False):
+    payload_len, psecret, step, num = unpack('!IIHH', header)
+    if step != 2:
+        if not silent:
+            log(f"bad response: {payload_len}, {psecret}, {step}, {num}")
+        return False
+    else:
+        if not silent:
+            log("response validated")
+        return True
+
+# returns true if server is running, false otherwise
+def test_and_record_if_server_running(host):
+    status = "up"
+    # initiate handshake to see if server is running
+    req = Request(Header(12, 0, 1), b"hello world")
+    sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+    try:
+        sock.sendto(req.to_network_bytes(), (host, 12235))
+        response = sock.recv(12 + 4 * 4)
+    except socket.timeout:
+        status = "down"
+
+    timestamp = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+
+    with open('./availability.log', 'a') as f:
+        f.write(f'{timestamp} - {host}:12235 is {status}\n')
+
+    return status == "up"
