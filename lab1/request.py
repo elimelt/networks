@@ -4,19 +4,18 @@ from math import ceil
 STUDENT_ID = 822
 
 class Header:
+
     def __init__(self, payload_len, psecret, step):
-        # 4 bytes
-        self.payload_len = payload_len
-        # 4 bytes
-        self.psecret = psecret
-        # 2 bytes
-        self.step = step
-        # 2 bytes - last 3 digits of Elijah's netid
-        self.sid_checksum = STUDENT_ID
+        self.payload_len = payload_len   # 4 bytes
+        self.psecret = psecret   # 4 bytes
+        self.step = step   # 2 bytes
+        self.sid_checksum = STUDENT_ID   # 2 bytes - last 3 digits of Elijah's netid
+
+
 class Request:
-    def __init__(self):
-        self.header: Header = None
-        self.payload: bytes = b""
+    def __init__(self, header=None, payload=b""):
+        self.header: Header = header
+        self.payload: bytes = payload
 
     # payload is type bytes literal
     def add_payload(self, payload: bytes):
