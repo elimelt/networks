@@ -49,10 +49,13 @@ def test_and_record_if_server_running(host):
     # initiate handshake to see if server is running
     req = Request(Header(12, 0, 1), b"hello world")
     sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+    sock.settimeout(0.5)
     try:
         sock.sendto(req.to_network_bytes(), (host, 12235))
         response = sock.recv(12 + 4 * 4)
+        print(f"{host}:12235 is up")
     except socket.timeout:
+        print(f"{host}:12235 is down")
         status = "down"
 
     timestamp = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")

@@ -1263,3 +1263,35 @@
 2024-01-21 10:11:23,024 - sent packet 17
 2024-01-21 10:11:23,024 - sent packet 18
 2024-01-21 10:11:23,056 - finished stage d - secretD: 1
+2024-01-21 10:32:12,281 - starting client - client_ip: 127.0.0.1, host: attu2.cs.washington.edu
+2024-01-21 10:32:12,284 - sent packet - stage: A
+2024-01-21 10:32:12,295 - finished stage a - secretA: 41
+2024-01-21 10:32:12,296 - sent packet - stage: B, packet_id: 0
+2024-01-21 10:32:12,798 - timeout on response - stage: B, packet_id: 0
+2024-01-21 10:32:12,800 - sent packet - stage: B, packet_id: 0
+2024-01-21 10:32:13,301 - timeout on response - stage: B, packet_id: 0
+2024-01-21 10:32:13,302 - sent packet - stage: B, packet_id: 0
+2024-01-21 10:32:13,803 - timeout on response - stage: B, packet_id: 0
+2024-01-21 10:32:13,805 - sent packet - stage: B, packet_id: 0
+2024-01-21 10:32:13,816 - packed acked - stage: B, packet_id: 0
+2024-01-21 10:32:13,817 - sent packet - stage: B, packet_id: 1
+2024-01-21 10:32:13,828 - packed acked - stage: B, packet_id: 1
+2024-01-21 10:32:13,829 - sent packet - stage: B, packet_id: 2
+2024-01-21 10:32:13,840 - packed acked - stage: B, packet_id: 2
+2024-01-21 10:32:13,841 - sent packet - stage: B, packet_id: 3
+2024-01-21 10:32:14,342 - timeout on response - stage: B, packet_id: 3
+2024-01-21 10:32:14,344 - sent packet - stage: B, packet_id: 3
+2024-01-21 10:32:14,845 - timeout on response - stage: B, packet_id: 3
+2024-01-21 10:32:14,847 - sent packet - stage: B, packet_id: 3
+2024-01-21 10:32:15,349 - timeout on response - stage: B, packet_id: 3
+2024-01-21 10:32:15,352 - sent packet - stage: B, packet_id: 3
+2024-01-21 10:32:15,362 - packed acked - stage: B, packet_id: 3
+2024-01-21 10:32:15,363 - sent packet - stage: B, packet_id: 4
+2024-01-21 10:32:15,376 - packed acked - stage: B, packet_id: 4
+2024-01-21 10:32:15,378 - sent packet - stage: B, packet_id: 5
+2024-01-21 10:32:24,747 - starting client - client_ip: 127.0.0.1, host: attu2.cs.washington.edu
+2024-01-21 10:32:24,747 - sent packet - stage: A
+2024-01-21 10:32:24,760 - finished stage a - secretA: 42
+2024-01-21 10:32:24,761 - sent packet - stage: B, packet_id: 0
+2024-01-21 10:32:25,262 - timeout on response - stage: B, packet_id: 0
+2024-01-21 10:32:25,264 - sent packet - stage: B, packet_id: 0
