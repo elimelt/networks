@@ -1295,3 +1295,4 @@
 2024-01-21 10:32:24,761 - sent packet - stage: B, packet_id: 0
 2024-01-21 10:32:25,262 - timeout on response - stage: B, packet_id: 0
 2024-01-21 10:32:25,264 - sent packet - stage: B, packet_id: 0
+2024-01-21 16:02:09,666 - server is down...exiting - host: attu2.cs.washington.edu

@@ -1,8 +1,9 @@
 import socket
 import logging
 from request import Request, Header
-from datetime import datetime
+from datetime import datetime, timedelta
 from struct import pack, unpack
+import matplotlib.pyplot as plt
 
 
 
@@ -64,3 +65,19 @@ def test_and_record_if_server_running(host):
         f.write(f'{timestamp} - {host}:12235 is {status}\n')
 
     return status == "up"
+
+
+def parse_logs():
+    out = []
+    with open('./availability.log', 'r') as f:
+        lines = f.readlines()
+        for line in lines:
+            timestamp, message = line.split(' - ')
+
+            time_val = datetime.strptime(timestamp, "%m/%d/%Y, %H:%M:%S")
+            host = message.split(':')[0]
+            status = message.split(' ')[-1].strip()
+
+            out.append((time_val, host, status))
+    return out
+
