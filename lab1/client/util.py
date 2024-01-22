@@ -3,7 +3,7 @@ import logging
 from request import Request, Header
 from datetime import datetime, timedelta
 from struct import pack, unpack
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 LOG_TO_FILE = True
 

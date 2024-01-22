@@ -3201,3 +3201,12 @@
 2024-01-21 18:48:13,897 - finished stage d - secretD: 47
 2024-01-22 09:28:34,408 - server is down...exiting - host: attu2.cs.washington.edu
 2024-01-22 09:28:44,183 - server is down...exiting - host: attu3.cs.washington.edu
+2024-01-22 13:20:00,822 - server is down...exiting - host: attu4.cs.washington.edu
+2024-01-22 13:20:05,911 - server is down...exiting - host: attu4.cs.washington.edu
+2024-01-22 13:21:51,954 - server is down...exiting - host: attu4.cs.washington.edu
+2024-01-22 13:22:44,051 - starting client - client_ip: 10.18.175.31, host: attu4.cs.washington.edu
+2024-01-22 13:22:44,051 - sent packet - stage: A
+2024-01-22 13:25:45,401 - starting client - client_ip: 10.18.175.31, host: attu4.cs.washington.edu
+2024-01-22 13:25:45,412 - sent packet - stage: A
+2024-01-22 13:26:33,202 - starting client - client_ip: 10.18.175.31, host: attu4.cs.washington.edu
+2024-01-22 13:26:33,202 - sent packet - stage: A

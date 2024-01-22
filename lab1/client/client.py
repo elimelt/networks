@@ -4,7 +4,7 @@ from util import validate_header, log, test_and_record_if_server_running
 from struct import pack, unpack
 from math import ceil
 
-HOST = "attu3.cs.washington.edu"
+HOST = "attu4.cs.washington.edu"
 TIMEOUT = 0.1
 UDP_PORT_A = 12235
 STEP = 1
@@ -113,9 +113,9 @@ def stage_d(num2, len2, secretC, c, sock):
     return secretD
 
 def main():
-    if not test_and_record_if_server_running(HOST):
-        log(f"server is down...exiting - host: {HOST}")
-        exit(1)
+    # if not test_and_record_if_server_running(HOST):
+    #     log(f"server is down...exiting - host: {HOST}")
+    #     exit(1)
 
     public_ip = socket.gethostbyname(socket.gethostname())
     log(f"starting client - client_ip: {public_ip}, host: {HOST}")

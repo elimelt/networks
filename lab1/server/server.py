@@ -14,8 +14,9 @@ STAGE_A_EXPECTED_PAYLOAD_LEN = 12
 # thread handler
 def handle_client_handshake(req_bytes, sock, client_addr):
     print("connection: ", client_addr)
+    print("starting stage a:")
     status_a = stage_a(req_bytes, sock, client_addr)
-    if stage_a:
+    if status_a:
         print("stage a success.")
     status_b = stage_b()
 
@@ -42,13 +43,14 @@ def stage_a(req_bytes, sock, client_addr) -> tuple[int]:
     
     header = req_bytes[:HEADER_SIZE]
     payload = req_bytes[HEADER_SIZE:]
-    if not check_header(header, len=STAGE_A_EXPECTED_PAYLOAD_LEN, secret=0, step=1):
+    if not check_header(header, STAGE_A_EXPECTED_PAYLOAD_LEN, 0, 1):
         return None
 
-    if len(payload) != STAGE_A_EXPECTED_PAYLOAD_LEN:
-        return None
+    # if len(payload) != STAGE_A_EXPECTED_PAYLOAD_LEN:
+    #     return None
 
     payload_str, = unpack(f'!{STAGE_A_EXPECTED_PAYLOAD_LEN}s', payload)
+    print("unpacked string", payload_str)
     if payload_str != "hello world":
         return None
 
@@ -64,7 +66,7 @@ def stage_a(req_bytes, sock, client_addr) -> tuple[int]:
     msg = response.to_network_bytes()
 
     sock.sendto(msg, client_addr)
-
+    print("sent message A to", client_addr)
     return (output_num, output_len, output_port, output_secret)
 
 def stage_b(udp_port: int, expected_len) -> bool:
