@@ -3,18 +3,20 @@ import matplotlib.pyplot as plt
 import requests
 import io
 import base64
+import os
 
 # Extract timestamps and events from log data
 def fetch_log_data():
-    url = 'http://attu1.cs.washington.edu:5555'
-    r = requests.get(url)
-    return r.text.splitlines()
+    if os.path.exists('./availability.log'):
+        with open('./availability.log', 'r') as f:
+            return f.read().splitlines()
+    else:
+        return []
 
 import matplotlib.pyplot as plt
 from datetime import datetime
 
-def plot_timeline():
-    log_data = fetch_log_data()
+def plot_timeline(log_data):
 
     # Extract timestamps and events from log data
     timestamps = []
@@ -64,7 +66,9 @@ def plot_to_base64(plt):
     my_base64_jpgData = base64.b64encode(my_stringIObytes.read()).decode()
     return my_base64_jpgData
 
-def to_html(logs, plt):
+def to_html():
+    logs = fetch_log_data()
+    plt = plot_timeline(logs)
     img = f'<img src="data:image/png;base64,{plot_to_base64(plt)}">'
     logs = f'{"<br>".join(logs)}'
     log_component = f'<div class="log-comp"><h2>Log</h2><p>{logs}</p></div>'
@@ -75,5 +79,3 @@ def to_html(logs, plt):
     lang = f'lang="en"'
     title= f'<title>Project 1 Server Monitoring</title>'
     return f'<html {lang}><head>{charset}{viewport}{title}{style}</head><body>{log_component}{img_component}</body></html>'
-
-print(to_html(fetch_log_data(), plot_timeline()))
