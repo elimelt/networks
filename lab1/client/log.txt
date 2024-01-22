@@ -3210,3 +3210,178 @@
 2024-01-22 13:25:45,412 - sent packet - stage: A
 2024-01-22 13:26:33,202 - starting client - client_ip: 10.18.175.31, host: attu4.cs.washington.edu
 2024-01-22 13:26:33,202 - sent packet - stage: A
+2024-01-22 13:30:58,486 - starting client - client_ip: 10.18.175.31, host: attu4.cs.washington.edu
+2024-01-22 13:30:58,488 - sent packet - stage: A
+2024-01-22 13:32:18,173 - starting client - client_ip: 10.18.175.31, host: attu4.cs.washington.edu
+2024-01-22 13:32:18,173 - sent packet - stage: A
+2024-01-22 13:33:43,408 - starting client - client_ip: 10.18.175.31, host: attu4.cs.washington.edu
+2024-01-22 13:33:43,412 - sent packet - stage: A
+2024-01-22 13:35:02,771 - starting client - client_ip: 10.18.175.31, host: attu4.cs.washington.edu
+2024-01-22 13:35:02,780 - sent packet - stage: A
+2024-01-22 13:36:29,351 - starting client - client_ip: 10.18.175.31, host: attu4.cs.washington.edu
+2024-01-22 13:36:29,354 - sent packet - stage: A
+2024-01-22 13:37:33,343 - starting client - client_ip: 10.18.175.31, host: attu4.cs.washington.edu
+2024-01-22 13:37:33,343 - sent packet - stage: A
+2024-01-22 13:38:27,750 - starting client - client_ip: 10.18.175.31, host: attu4.cs.washington.edu
+2024-01-22 13:38:27,750 - sent packet - stage: A
+2024-01-22 13:39:30,850 - starting client - client_ip: 10.18.175.31, host: attu4.cs.washington.edu
+2024-01-22 13:39:30,850 - sent packet - stage: A
+2024-01-22 13:41:27,675 - starting client - client_ip: 10.18.175.31, host: attu4.cs.washington.edu
+2024-01-22 13:41:27,675 - sent packet - stage: A
+2024-01-22 13:43:11,011 - starting client - client_ip: 10.18.175.31, host: attu4.cs.washington.edu
+2024-01-22 13:43:11,014 - sent packet - stage: A
+2024-01-22 13:43:58,333 - starting client - client_ip: 10.18.175.31, host: attu4.cs.washington.edu
+2024-01-22 13:43:58,333 - sent packet - stage: A
+2024-01-22 13:44:33,787 - starting client - client_ip: 10.18.175.31, host: attu4.cs.washington.edu
+2024-01-22 13:44:33,790 - sent packet - stage: A
+2024-01-22 13:46:22,075 - starting client - client_ip: 10.18.175.31, host: attu4.cs.washington.edu
+2024-01-22 13:46:22,080 - sent packet - stage: A
+2024-01-22 13:47:48,142 - starting client - client_ip: 10.18.175.31, host: attu4.cs.washington.edu
+2024-01-22 13:47:48,142 - sent packet - stage: A
+2024-01-22 13:48:40,790 - starting client - client_ip: 10.18.175.31, host: attu4.cs.washington.edu
+2024-01-22 13:48:40,790 - sent packet - stage: A
+2024-01-22 13:52:06,690 - starting client - client_ip: 10.18.175.31, host: attu4.cs.washington.edu
+2024-01-22 13:52:06,690 - sent packet - stage: A
+2024-01-22 13:53:19,463 - starting client - client_ip: 10.18.175.31, host: attu4.cs.washington.edu
+2024-01-22 13:53:19,463 - sent packet - stage: A
+2024-01-22 13:53:19,500 - bad response...exiting - stage: A
+2024-01-22 13:54:22,311 - starting client - client_ip: 10.18.175.31, host: attu4.cs.washington.edu
+2024-01-22 13:54:22,320 - sent packet - stage: A
+2024-01-22 13:55:07,102 - starting client - client_ip: 10.18.175.31, host: attu4.cs.washington.edu
+2024-01-22 13:55:07,102 - sent packet - stage: A
+2024-01-22 13:55:07,112 - finished stage a - secretA: 75
+2024-01-22 13:55:07,127 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:07,230 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:07,232 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:07,346 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:07,346 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:07,446 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:07,448 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:07,561 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:07,561 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:07,663 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:07,665 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:07,770 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:07,770 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:07,880 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:07,881 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:07,996 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:07,997 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:08,097 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:08,098 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:08,206 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:08,208 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:08,315 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:08,316 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:08,420 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:08,422 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:08,531 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:08,532 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:08,638 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:08,638 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:08,740 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:08,742 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:08,850 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:08,850 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:08,964 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:08,965 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:09,070 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:09,070 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:09,184 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:09,185 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:09,298 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:09,300 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:09,414 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:09,415 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:09,528 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:09,528 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:09,645 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:09,646 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:09,761 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:09,762 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:09,880 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:09,881 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:09,996 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:09,996 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:10,097 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:10,098 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:10,214 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:10,214 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:10,329 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:10,330 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:10,440 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:10,441 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:10,560 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:10,562 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:10,678 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:10,680 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:10,795 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:10,797 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:10,897 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:10,898 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:11,013 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:11,013 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:11,114 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:11,114 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:11,229 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:11,231 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:11,347 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:11,348 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:11,463 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:11,463 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:11,570 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:11,571 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:11,684 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:11,685 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:11,790 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:11,790 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:11,897 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:11,897 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:12,013 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:12,013 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:12,114 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:12,115 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:12,216 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:12,216 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:12,330 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:12,332 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:12,436 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:12,436 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:12,537 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:12,537 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:12,637 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:12,637 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:12,738 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:12,738 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:12,838 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:12,838 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:12,948 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:12,948 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:13,065 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:13,066 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:33,311 - starting client - client_ip: 10.18.175.31, host: attu4.cs.washington.edu
+2024-01-22 13:55:33,311 - sent packet - stage: A
+2024-01-22 13:55:33,322 - finished stage a - secretA: 58
+2024-01-22 13:55:33,322 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:33,430 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:33,431 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:33,547 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:33,550 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:33,666 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:33,667 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:33,776 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:33,778 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:33,883 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:33,884 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:33,990 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:33,992 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:34,099 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:34,101 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:34,213 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:34,214 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:34,321 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:34,322 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:34,422 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:34,422 - sent packet - stage: B, packet_id: 0
+2024-01-22 13:55:34,534 - timeout on response - stage: B, packet_id: 0
+2024-01-22 13:55:34,534 - sent packet - stage: B, packet_id: 0
