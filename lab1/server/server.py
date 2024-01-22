@@ -2,7 +2,7 @@ import socket
 import _thread
 from struct import pack, unpack
 import random
-from request import Request, Header
+from response import Response, Header
 
 HOST = "attu4.cs.washington.edu"
 PORT = 12235
@@ -53,7 +53,7 @@ def stage_a(req_bytes, sock) -> tuple[int]:
     output_secret = random.randint(1, 100)
 
     payload, = pack("!IIII", output_num, output_len, output_port, output_secret)
-    response = Request(Header(16, 0, 1), payload)
+    response = Response(Header(16, 0, 1), payload)
 
     msg = response.to_network_bytes()
 
