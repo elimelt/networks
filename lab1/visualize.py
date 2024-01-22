@@ -64,7 +64,16 @@ def plot_to_base64(plt):
     my_base64_jpgData = base64.b64encode(my_stringIObytes.read()).decode()
     return my_base64_jpgData
 
-def to_html(plt):
+def to_html(logs, plt):
     img = f'<img src="data:image/png;base64,{plot_to_base64(plt)}">'
+    logs = f'{"<br>".join(logs)}'
+    log_component = f'<div class="log-comp"><h2>Log</h2><p>{logs}</p></div>'
+    img_component = f'<div class="img-comp"><h2>Plot</h2>{img}</div>'
+    style = f'<style>.log-comp, .img-comp {{display: inline-block; vertical-align: top; padding: 10px;}}</style>'
+    charset = f'<meta charset="UTF-8">'
+    viewport = f'<meta name="viewport" content="width=device-width, initial-scale=1.0">'
+    lang = f'lang="en"'
+    title= f'<title>Project 1 Server Monitoring</title>'
+    return f'<html {lang}><head>{charset}{viewport}{title}{style}</head><body>{log_component}{img_component}</body></html>'
 
-    return f"<html><body>{img}</body></html>"
+print(to_html(fetch_log_data(), plot_timeline()))
