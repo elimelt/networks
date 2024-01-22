@@ -17,6 +17,8 @@ def handle_client_handshake(req_bytes, sock, client_addr):
     status_a = stage_a(req_bytes, sock, client_addr)
     if status_a:
         print("stage a success.")
+    else:
+        return
     # status_b = stage_b()
 
 def check_header(header, payload_len, secret, step):
