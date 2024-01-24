@@ -220,7 +220,7 @@ def stage_d(conn, client_addr, num2, len2, p_secret, c):
         if len(payload) != padded_len:
             print('bad payload length')
             return None
-            
+
         payload_str, = unpack(f'!{padded_len}s', payload)
         payload_str = payload_str.decode('utf-8').strip('\x00')
 

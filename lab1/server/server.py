@@ -78,19 +78,23 @@ def stage_a(req_bytes, sock, client_addr) -> tuple[int]:
 
     header = req_bytes[:HEADER_SIZE]
     payload = req_bytes[HEADER_SIZE:]
+
+    # check header
     if not check_header(header, STAGE_A_EXPECTED_PAYLOAD_LEN, 0, 1):
         return None
 
+    # check length of payload
     if len(payload) != STAGE_A_EXPECTED_PAYLOAD_LEN:
         return None
 
+    # decode payload string
     payload_str, = unpack(f'!{STAGE_A_EXPECTED_PAYLOAD_LEN}s', payload)
     payload_str = payload_str.decode('utf-8').strip('\x00')
 
     if payload_str != "hello world":
         return None
 
-    # num, len, udp_port, secretA
+    # randomly generate num, len, udp_port, secretA
     output_num = random.randint(5, 30)
     output_len = random.randint(15, 50)
     output_port = random.randint(60000, 65000)
@@ -116,7 +120,7 @@ def stage_b(udp_port: int, p_len_unpadded: int, num_packets: int, a_secret) -> b
 
     ack_num = 0
     addr = None
-    p_len_padded = int(ceil(p_len_with_id/4) * 4)
+    p_len_padded = int(ceil(p_len_with_id / 4) * 4)
     while ack_num < num_packets:
         try:
             data, addr = sock.recvfrom(p_len_padded + HEADER_SIZE)
@@ -217,14 +221,14 @@ def stage_d(conn, client_addr, num2, len2, p_secret, c):
             print('bad payload length')
             return None
 if len(payload) != padded_len:
-            return Non
+            return None
+
         payload_str, = unpack(f'!{padded_len}s', payload)
         payload_str = payload_str.decode('utf-8').strip('\x00')
 
         # check the character
         for i in range(len(payload_str)):
             if payload_str[i] != c.decode('utf-8'):
-                #print("bad payload content", payload_str[i], c.decode('utf-8'))
                 return None
 
         num_req += 1
