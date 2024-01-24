@@ -124,6 +124,7 @@ def stage_b(udp_port: int, p_len_unpadded: int, num_packets: int, a_secret) -> b
             payload = data[HEADER_SIZE:]
 
             if not check_header(header, p_len_with_id, a_secret, 1):
+                #print("bad header")
                 return None
 
             if len(payload) != p_len_padded:
@@ -197,6 +198,9 @@ def stage_c(tcp_port, secret_b):
     header = Header(len(payload), secret_b, 2)
     res = Response(header, payload)
 
+    # # bug in course staff's server implementation ??? or just padding
+    # num2, len2, secretC, c, _c1, _c2, _c3 = unpack('!IIIcccc', response[HEADER_SIZE:])
+
     connection.sendto(res.to_network_bytes(), client_addr)
     return connection, client_addr, output_num, output_len, output_secret, output_char
 
@@ -216,8 +220,7 @@ def stage_d(conn, client_addr, num2, len2, p_secret, c):
         if len(payload) != padded_len:
             print('bad payload length')
             return None
-if len(payload) != padded_len:
-            return Non
+            
         payload_str, = unpack(f'!{padded_len}s', payload)
         payload_str = payload_str.decode('utf-8').strip('\x00')
 

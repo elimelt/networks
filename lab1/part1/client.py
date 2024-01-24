@@ -6,6 +6,7 @@ from math import ceil
 from multiprocessing import Process
 import time
 import random
+import sys
 
 
 HOST = "attu4.cs.washington.edu"
@@ -141,10 +142,16 @@ def main():
 
 
 if __name__ == "__main__":
-    NPROC = 1
+    nproc = 1
+    if len(sys.argv) == 2:
+        if not sys.argv[1].isnumeric():
+            print("Usage: python client.py <nproc (default 1)>")
+            exit(1)
+        else:
+            nproc = int(sys.argv[1])
 
     processes = []
-    for _ in range(NPROC):
+    for _ in range(nproc):
         p = Process(target=main)
         time.sleep(random.randint(1, 10)/10)
         processes.append(p)
