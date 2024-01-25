@@ -1,9 +1,9 @@
 import socket
 from request import Request, Header
-from util import validate_header
+from util import validate_header, log
 from struct import pack, unpack
 
-HOST = "attu3.cs.washington.edu"
+HOST = "attu4.cs.washington.edu"
 TIMEOUT = 0.5
 UDP_PORT_A = 12235
 CLIENT_STEP = 1
@@ -29,14 +29,14 @@ def stage_a() -> tuple[int, int, int, int]:
 
     # verifies that the response is long enough to unpack
     if len(response) != HEADER_SIZE + STAGE_A_EXP_PAYLOAD_LEN:
-        print("bad response...exiting - stage: A")
+        log("bad response...exiting - stage: A")
         exit(1)
 
     server_header = response[:HEADER_SIZE]
     server_payload = response[HEADER_SIZE:]
 
     if not validate_header(server_header, SERVER_STEP):
-        print("bad response...exiting - stage: A")
+        log("bad response...exiting - stage: A")
         exit(1)
 
     num_a, len_a, udp_port_a, secretA = unpack('!IIII', server_payload)
@@ -86,14 +86,14 @@ def stage_b(num_packets, payload_len, udp_port, secret_a) -> tuple[int, int]:
 
     # verifies that the response is long enough to unpack
     if len(response) != HEADER_SIZE + STAGE_B2_EXP_PAYLOAD_LEN:
-        print("bad response...exiting - stage: B")
+        log("bad response...exiting - stage: B")
         exit(1)
 
     server_header = response[:HEADER_SIZE]
     server_payload = response[HEADER_SIZE:]
 
     if not validate_header(server_header, SERVER_STEP):
-        print("bad response...exiting - stage: B")
+        log("bad response...exiting - stage: B")
         exit(1)
 
     tcp_port, secret_a = unpack('!II', server_payload)
@@ -109,14 +109,14 @@ def stage_c(tcp_port) -> tuple[int, int, int, str, socket.socket]:
 
     # verifies that the response is long enough to unpack
     if len(response) != HEADER_SIZE + STAGE_C_EXP_PAYLOAD_LEN:
-        print("bad response...exiting - stage: C")
+        log("bad response...exiting - stage: C")
         exit(1)
 
     server_header = response[:HEADER_SIZE]
     server_payload = response[HEADER_SIZE:]
 
     if not validate_header(server_header, SERVER_STEP):
-        print("bad response...exiting - stage: C")
+        log("bad response...exiting - stage: C")
         exit(1)
 
     # last 3 bytes are padding
@@ -140,14 +140,14 @@ def stage_d(num_packets, payload_len, secret_c, c, sock_c):
 
     # verifies that the response is long enough to unpack
     if len(response) != HEADER_SIZE + STAGE_D_EXP_PAYLOAD_LEN:
-        print("bad response...exiting - stage: D")
+        log("bad response...exiting - stage: D")
         exit(1)
 
     server_header = response[:HEADER_SIZE]
     server_payload = response[HEADER_SIZE:]
 
     if not validate_header(server_header, SERVER_STEP):
-        print("bad response...exiting - stage: D")
+        log("bad response...exiting - stage: D")
         exit(1)
 
     secret_d, = unpack('!I', server_payload)
@@ -158,17 +158,16 @@ def stage_d(num_packets, payload_len, secret_c, c, sock_c):
 def main():
 
     num_a, len_a, udp_port_a, secretA = stage_a()
-    print(f"finished stage a - secretA: {secretA}")
+    log(f"finished stage a - secretA: {secretA}")
 
     tcp_port_b, secret_b = stage_b(num_a, len_a, udp_port_a, secretA)
-    print(f"finished stage b - secretB: {secret_b}")
+    log(f"finished stage b - secretB: {secret_b}")
 
     num_c, len_c, secret_c, c, sock_c = stage_c(tcp_port_b)
-    print(f"finished stage c - secretC: {secret_c}")
+    log(f"finished stage c - secretC: {secret_c}")
 
     secret_c = stage_d(num_c, len_c, secret_c, c, sock_c)
-    print(f"finished stage d - secretD: {secret_c}")
+    log(f"finished stage d - secretD: {secret_c}")
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
