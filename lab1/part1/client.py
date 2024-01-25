@@ -109,6 +109,7 @@ def stage_c(tcp_port) -> tuple[int, int, int, str, socket.socket]:
 
     # verifies that the response is long enough to unpack
     if len(response) != HEADER_SIZE + STAGE_C_EXP_PAYLOAD_LEN:
+        sock.close()
         log("bad response...exiting - stage: C")
         exit(1)
 
@@ -116,6 +117,7 @@ def stage_c(tcp_port) -> tuple[int, int, int, str, socket.socket]:
     server_payload = response[HEADER_SIZE:]
 
     if not validate_header(server_header, SERVER_STEP):
+        sock.close()
         log("bad response...exiting - stage: C")
         exit(1)
 

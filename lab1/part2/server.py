@@ -48,8 +48,8 @@ def handle_client_handshake(req_bytes, sock, client_addr):
 
     log(f"{client_addr[0]} - stage c success.")
 
-    connection, client_addr, output_num_c, output_len_c, output_secret_c, output_c = status_c
-    status_d = stage_d(connection, client_addr, output_num_c, output_len_c, output_secret_c, output_c)
+    sock, connection, client_addr, output_num_c, output_len_c, output_secret_c, output_c = status_c
+    status_d = stage_d(sock, connection, client_addr, output_num_c, output_len_c, output_secret_c, output_c)
     if not status_d:
         log(f"{client_addr[0]} - stage d failed.")
         return
@@ -132,18 +132,22 @@ def stage_b(udp_port: int, p_len_unpadded: int, num_packets: int, a_secret):
             header, payload = data[:HEADER_SIZE], data[HEADER_SIZE:]
 
             if not check_header(header, p_len_with_id, a_secret, CLIENT_STEP):
+                sock.close()
                 return None
 
             if len(payload) != p_len_padded:
+                sock.close()
                 return None
 
             # check payload is all 0s besides packet id
             if any(payload[4:]):
+                sock.close()
                 return None
 
             # check packet id. if sent out of order, drop client
             packet_id, = unpack('!I', payload[:4])
             if packet_id != ack_num:
+                sock.close()
                 return None
 
             # randomly decide to drop packet
@@ -159,7 +163,10 @@ def stage_b(udp_port: int, p_len_unpadded: int, num_packets: int, a_secret):
             sock.sendto(ack_response.to_network_bytes(), addr)
             ack_num += 1
         except:
+            sock.close()
             return None
+
+    sock.close()
 
     output_tcp_port = randint(50000, 55000)
     output_secret_b = randint(1, 100)
@@ -203,10 +210,10 @@ def stage_c(secret_b, sock):
     msg = res.to_network_bytes()
     assert len(msg) == HEADER_SIZE + STAGE_C_EXP_PAYLOAD_LEN
     connection.sendto(msg, client_addr)
-    return connection, client_addr, output_num, \
+    return sock, connection, client_addr, output_num, \
         output_len, output_secret, output_char
 
-def stage_d(conn, client_addr, num2, len2, p_secret, c):
+def stage_d(sock, conn, client_addr, num2, len2, p_secret, c):
 
     # receive num packets
     num_req = 0
@@ -217,9 +224,13 @@ def stage_d(conn, client_addr, num2, len2, p_secret, c):
         payload = data[HEADER_SIZE:]
 
         if not check_header(header, len2, p_secret, 1):
+            sock.close()
+            conn.close()
             return None
 
         if len(payload) != padded_len:
+            sock.close()
+            conn.close()
             return None
 
         payload_str, = unpack(f'!{padded_len}s', payload)
@@ -228,6 +239,8 @@ def stage_d(conn, client_addr, num2, len2, p_secret, c):
         # check the character
         for i in range(len(payload_str)):
             if payload_str[i] != c.decode('utf-8'):
+                sock.close()
+                conn.close()
                 return None
 
         num_req += 1
@@ -239,6 +252,8 @@ def stage_d(conn, client_addr, num2, len2, p_secret, c):
     msg = res.to_network_bytes()
     assert len(msg) == HEADER_SIZE + STAGE_D_EXP_PAYLOAD_LEN
     conn.sendto(res.to_network_bytes(), client_addr)
+    sock.close()
+    conn.close()
     return (output_secret)
 
 
