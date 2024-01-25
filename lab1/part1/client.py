@@ -1,6 +1,6 @@
 import socket
 from request import Request, Header
-from util import validate_header, log, test_and_record_if_server_running
+from util import validate_header
 from struct import pack, unpack
 from math import ceil
 from multiprocessing import Process
@@ -9,153 +9,168 @@ import random
 import sys
 
 
-HOST = "attu4.cs.washington.edu"
-TIMEOUT = 0.1
+HOST = "attu3.cs.washington.edu"
+TIMEOUT = 0.5
 UDP_PORT_A = 12235
-STEP = 1
+CLIENT_STEP = 1
 HEADER_SIZE = 12
 
+STAGE_A_EXP_PAYLOAD_LEN = 16
+STAGE_B1_EXP_PAYLOAD_LEN = 4
+STAGE_B2_EXP_PAYLOAD_LEN = 8
+STAGE_C_EXP_PAYLOAD_LEN = 16
+STAGE_D_EXP_PAYLOAD_LEN = 4
+
 def stage_a() -> tuple[int, int, int, int]:
-    req = Request(Header(12, 0, STEP), b"hello world")
+
+    client_payload = b"hello world"
+
+    req = Request(Header(12, 0, CLIENT_STEP), client_payload)
     sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-
     sock.sendto(req.to_network_bytes(), (HOST, UDP_PORT_A))
-    log("sent packet - stage: A")
-    response = sock.recv(HEADER_SIZE + 4 * 4)
-
+    response = sock.recv(HEADER_SIZE + STAGE_A_EXP_PAYLOAD_LEN)
     sock.close()
 
-    if not validate_header(response[:HEADER_SIZE], silent=True):
-        log("bad response...exiting - stage: A")
+    # verifies that the response is long enough to unpack
+    if len(response) != HEADER_SIZE + STAGE_A_EXP_PAYLOAD_LEN:
+        print("bad response...exiting - stage: A")
         exit(1)
 
-    num, len_b, udp_port_a, secretA = unpack('!IIII', response[HEADER_SIZE:]) # payload
-    return num, len_b, udp_port_a, secretA
+    server_header = response[:HEADER_SIZE]
+    server_payload = response[HEADER_SIZE:]
 
-def stage_b(num: int, length: int, udp_port: int, secretA: int) -> tuple[int, int]:
-    header = Header(length + 4, secretA, STEP)
+    if not validate_header(server_header, 2):
+        print("bad response...exiting - stage: A")
+        exit(1)
+
+    num_a, len_a, udp_port_a, secretA = unpack('!IIII', server_payload)
+    return num_a, len_a, udp_port_a, secretA
+
+def stage_b(num_packets, payload_len, udp_port, secret_a) -> tuple[int, int]:
+
+    client_header = Header(payload_len + 4, secret_a, CLIENT_STEP)
 
     sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+    # socket timeout when for when packet not acked
     sock.settimeout(TIMEOUT)
 
-    def create_payload_bytes(id, payload, payload_length):
-        return pack(f"!I{payload_length}s", id, payload)
-
     packet_id = 0
+    while packet_id < num_packets:
 
-    while packet_id < num:
-        req = Request(header, create_payload_bytes(packet_id, b'\x00' * length, length))
+        client_payload = pack(f"!I{payload_len}s", packet_id, b'\x00' * payload_len)
+        req = Request(client_header, client_payload)
+
         acked = False
         response = None
+
+        # continues to send until acked
         while not acked:
             sock.sendto(req.to_network_bytes(), (HOST,udp_port))
-            log(f"sent packet - stage: B, packet_id: {packet_id}")
             try:
-                response = sock.recv(28)
-                # if not validate_header(response[:HEADER_SIZE], silent=True):
-                #     log(f"bad response header...try again- stage: B, packet_id: {packet_id}")
-                    # continue
-                if unpack('!I', response[HEADER_SIZE:])[0] == packet_id:
+                response = sock.recv(HEADER_SIZE + STAGE_B1_EXP_PAYLOAD_LEN)
+
+                # verifies that the response is long enough to unpack
+                if len(response) != HEADER_SIZE + STAGE_B1_EXP_PAYLOAD_LEN:
+                    continue
+                
+                server_header = response[:HEADER_SIZE]
+                server_payload = response[HEADER_SIZE:]
+
+                if not validate_header(response[:HEADER_SIZE], 1):
+                    continue
+                if unpack('!I', server_payload)[0] == packet_id:
                     acked = True
             except socket.timeout:
-                log(f"timeout on response - stage: B, packet_id: {packet_id}")
                 continue
-
-        log(f"packed acked - stage: B, packet_id: {packet_id}")
         packet_id += 1
 
-    response = sock.recv(HEADER_SIZE + 4 * 2)
+    response = sock.recv(HEADER_SIZE + STAGE_B2_EXP_PAYLOAD_LEN)
     sock.close()
 
-    if not validate_header(response[:HEADER_SIZE], silent=True):
-        log("bad response...exiting - stage: B")
+    # verifies that the response is long enough to unpack
+    if len(response) != HEADER_SIZE + STAGE_B2_EXP_PAYLOAD_LEN:
+        print("bad response...exiting - stage: B")
         exit(1)
 
-    TCP_port, secretB = unpack('!II', response[HEADER_SIZE:])
+    server_header = response[:HEADER_SIZE]
+    server_payload = response[HEADER_SIZE:]
 
-    return TCP_port, secretB
+    if not validate_header(server_header, 2):
+        print("bad response...exiting - stage: B")
+        exit(1)
 
-def stage_c(TCP_port: int, secretB: int) -> tuple[int, int, int, str]:
+    tcp_port, secret_a = unpack('!II', server_payload)
+
+    return tcp_port, secret_a
+
+def stage_c(tcp_port) -> tuple[int, int, int, str]:
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect((HOST, TCP_port))
+    sock.connect((HOST, tcp_port))
 
-    # extra + 3 for padding
-    response = sock.recv(HEADER_SIZE + 4 * 3 + 1 + 3)
-    if not validate_header(response[:HEADER_SIZE], silent=True):
-        log("bad response...exiting - stage: C")
+    response = sock.recv(HEADER_SIZE + STAGE_C_EXP_PAYLOAD_LEN)
+
+    # verifies that the response is long enough to unpack
+    if len(response) != HEADER_SIZE + STAGE_C_EXP_PAYLOAD_LEN:
+        print("bad response...exiting - stage: C")
         exit(1)
 
-    # bug in course staff's server implementation ??? or just padding
-    num2, len2, secretC, c, _c1, _c2, _c3 = unpack('!IIIcccc', response[HEADER_SIZE:])
+    server_header = response[:HEADER_SIZE]
+    server_payload = response[HEADER_SIZE:]
 
-    return num2, len2, secretC, c, sock
+    if not validate_header(server_header, 2):
+        print("bad response...exiting - stage: C")
+        exit(1)
+
+    # last 3 bytes are padding
+    num_c, len_c, secret_c, c, _, _, _ = unpack('!IIIcccc', server_payload)
+
+    return num_c, len_c, secret_c, c, sock
 
 
 
-def stage_d(num2, len2, secretC, c, sock):
+def stage_d(num_packets, payload_len, secret_c, c, sock_c):
     req_payload = bytearray()
-    req_payload.extend(c * len2)
+    req_payload.extend(c * payload_len)
 
-    req = Request(Header(len2, secretC, STEP), req_payload)
+    req = Request(Header(payload_len, secret_c, CLIENT_STEP), req_payload)
     msg = req.to_network_bytes()
 
-    for i in range(num2):
-        sock.send(msg)
-        log(f"sent tcp packet - stage: D, sequenceNumber: {i}")
+    for _ in range(num_packets):
+        sock_c.send(msg)
 
-    response = sock.recv(HEADER_SIZE + 4)
-    sock.close()
+    response = sock_c.recv(HEADER_SIZE + STAGE_D_EXP_PAYLOAD_LEN)
+    sock_c.close()
 
-    resp_header = response[:HEADER_SIZE]
-    resp_payload = response[HEADER_SIZE:]
-
-    if not validate_header(resp_header, silent=True):
-        log("bad response...exiting - stage: D")
+    # verifies that the response is long enough to unpack
+    if len(response) != HEADER_SIZE + STAGE_D_EXP_PAYLOAD_LEN:
+        print("bad response...exiting - stage: D")
         exit(1)
 
-    secretD, = unpack('!I', resp_payload)
+    server_header = response[:HEADER_SIZE]
+    server_payload = response[HEADER_SIZE:]
 
-    return secretD
+    if not validate_header(server_header, 2):
+        print("bad response...exiting - stage: D")
+        exit(1)
+
+    secret_d, = unpack('!I', server_payload)
+
+    return secret_d
 
 def main():
-    # if not test_and_record_if_server_running(HOST):
-    #     log(f"server is down...exiting - host: {HOST}")
-    #     exit(1)
 
-    public_ip = socket.gethostbyname(socket.gethostname())
-    log(f"starting client - client_ip: {public_ip}, host: {HOST}")
+    num_a, len_a, udp_port_a, secretA = stage_a()
+    print(f"finished stage a - secretA: {secretA}")
 
-    numB, lenB, udp_port_a, secretA = stage_a()
-    # log(f"numB: {numB}, lenB: {lenB}, udp_port_a: {udp_port_a}, secretA: {secretA}")
-    log(f"finished stage a - secretA: {secretA}")
+    tcp_port_b, secret_b = stage_b(num_a, len_a, udp_port_a, secretA)
+    print(f"finished stage b - secretB: {secret_b}")
 
-    TCP_port, secretB = stage_b(numB, lenB, udp_port_a, secretA)
-    # log(f"TCP_port: {TCP_port}, secretB: {secretB}")
-    log(f"finished stage b - secretB: {secretB}")
+    num_c, len_c, secret_c, c, sock_c = stage_c(tcp_port_b)
+    print(f"finished stage c - secretC: {secret_c}")
 
-    num2, len2, secretC, c, sock = stage_c(TCP_port, secretB)
-    # log(f"num2: {num2}, len2: {len2}, secretC: {secretC}, c: {c}")
-    log(f"finished stage c - secretC: {secretC}")
-
-    secretD = stage_d(num2, len2, secretC, c, sock)
-    log(f"finished stage d - secretD: {secretD}")
+    secret_c = stage_d(num_c, len_c, secret_c, c, sock_c)
+    print(f"finished stage d - secretD: {secret_c}")
 
 
 if __name__ == "__main__":
-    nproc = 1
-    if len(sys.argv) == 2:
-        if not sys.argv[1].isnumeric():
-            print("Usage: python client.py <nproc (default 1)>")
-            exit(1)
-        else:
-            nproc = int(sys.argv[1])
-
-    processes = []
-    for _ in range(nproc):
-        p = Process(target=main)
-        time.sleep(random.randint(1, 10)/10)
-        processes.append(p)
-        p.start()
-
-    for p in processes:
-        p.join()
+    main()

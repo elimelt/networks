@@ -9,7 +9,7 @@ class Header:
         self.payload_len = payload_len   # 4 bytes
         self.psecret = psecret   # 4 bytes
         self.step = step   # 2 bytes
-        self.sid_checksum = STUDENT_ID   # 2 bytes - last 3 digits of Elijah's netid
+        self.sid_checksum = STUDENT_ID   # 2 bytes
 
 
 class Request:

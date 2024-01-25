@@ -4,8 +4,10 @@ Dhreeti Rathore - dhreetir
 Nathan Khuat - nkhuat
 
 The sequence of server secrets that were received by your client program: 
-secretB: 50
-secretC: 24
-secretD: 129
-secret:
+secretA: 60
+secretB: 30
+secretC: 241
+secretD: 11
 Instructions on how to compile and run your code
+
+python client.py
