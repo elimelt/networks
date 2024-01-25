@@ -3,4 +3,8 @@ Elijah Melton - elimelt
 Dhreeti Rathore - dhreetir
 Nathan Khuat - nkhuat
 
-Instructions on how to compile and run your code
+## Running the server
+
+1. Make sure you python 3 installed
+2. Set `HOST` to your machine's hostname or IP address inside of server.py
+3. Run `python3 server.py` to start the server

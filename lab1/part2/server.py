@@ -245,6 +245,5 @@ def stage_d(conn, client_addr, num2, len2, p_secret, c):
 def main():
     start_server(UDP_INITIATE_HANDSHAKE_PORT)
 
-
 if __name__ == "__main__":
     main()

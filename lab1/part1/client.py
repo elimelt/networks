@@ -3,7 +3,7 @@ from request import Request, Header
 from util import validate_header, log
 from struct import pack, unpack
 
-HOST = "attu4.cs.washington.edu"
+SERVER_HOST = "attu4.cs.washington.edu"
 TIMEOUT = 0.5
 UDP_PORT_A = 12235
 CLIENT_STEP = 1
@@ -23,7 +23,7 @@ def stage_a() -> tuple[int, int, int, int]:
 
     req = Request(Header(12, 0, CLIENT_STEP), client_payload)
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.sendto(req.to_network_bytes(), (HOST, UDP_PORT_A))
+    sock.sendto(req.to_network_bytes(), (SERVER_HOST, UDP_PORT_A))
     response = sock.recv(HEADER_SIZE + STAGE_A_EXP_PAYLOAD_LEN)
     sock.close()
 
@@ -62,7 +62,7 @@ def stage_b(num_packets, payload_len, udp_port, secret_a) -> tuple[int, int]:
 
         # continues to send until acked
         while not acked:
-            sock.sendto(req.to_network_bytes(), (HOST, udp_port))
+            sock.sendto(req.to_network_bytes(), (SERVER_HOST, udp_port))
             try:
                 response = sock.recv(HEADER_SIZE + STAGE_B1_EXP_PAYLOAD_LEN)
 
@@ -103,7 +103,7 @@ def stage_b(num_packets, payload_len, udp_port, secret_a) -> tuple[int, int]:
 
 def stage_c(tcp_port) -> tuple[int, int, int, str, socket.socket]:
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect((HOST, tcp_port))
+    sock.connect((SERVER_HOST, tcp_port))
 
     response = sock.recv(HEADER_SIZE + STAGE_C_EXP_PAYLOAD_LEN)
 
