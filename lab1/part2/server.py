@@ -166,7 +166,6 @@ def stage_b(udp_port: int, p_len_unpadded: int, num_packets: int, a_secret):
             sock.close()
             return None
 
-    sock.close()
 
     output_tcp_port = randint(50000, 55000)
     output_secret_b = randint(1, 100)
@@ -180,6 +179,8 @@ def stage_b(udp_port: int, p_len_unpadded: int, num_packets: int, a_secret):
     header = Header(STAGE_B2_EXP_PAYLOAD_LEN, a_secret, SERVER_STEP)
     response = Response(header, payload)
     sock.sendto(response.to_network_bytes(), addr)
+
+    sock.close()
 
     return output_secret_b, output_sock
 
