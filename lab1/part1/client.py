@@ -2,17 +2,12 @@ import socket
 from request import Request, Header
 from util import validate_header
 from struct import pack, unpack
-from math import ceil
-from multiprocessing import Process
-import time
-import random
-import sys
-
 
 HOST = "attu3.cs.washington.edu"
 TIMEOUT = 0.5
 UDP_PORT_A = 12235
 CLIENT_STEP = 1
+SERVER_STEP = 2
 HEADER_SIZE = 12
 
 STAGE_A_EXP_PAYLOAD_LEN = 16
@@ -21,12 +16,13 @@ STAGE_B2_EXP_PAYLOAD_LEN = 8
 STAGE_C_EXP_PAYLOAD_LEN = 16
 STAGE_D_EXP_PAYLOAD_LEN = 4
 
+
 def stage_a() -> tuple[int, int, int, int]:
 
     client_payload = b"hello world"
 
     req = Request(Header(12, 0, CLIENT_STEP), client_payload)
-    sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.sendto(req.to_network_bytes(), (HOST, UDP_PORT_A))
     response = sock.recv(HEADER_SIZE + STAGE_A_EXP_PAYLOAD_LEN)
     sock.close()
@@ -39,18 +35,19 @@ def stage_a() -> tuple[int, int, int, int]:
     server_header = response[:HEADER_SIZE]
     server_payload = response[HEADER_SIZE:]
 
-    if not validate_header(server_header, 2):
+    if not validate_header(server_header, SERVER_STEP):
         print("bad response...exiting - stage: A")
         exit(1)
 
     num_a, len_a, udp_port_a, secretA = unpack('!IIII', server_payload)
     return num_a, len_a, udp_port_a, secretA
 
+
 def stage_b(num_packets, payload_len, udp_port, secret_a) -> tuple[int, int]:
 
     client_header = Header(payload_len + 4, secret_a, CLIENT_STEP)
 
-    sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     # socket timeout when for when packet not acked
     sock.settimeout(TIMEOUT)
 
@@ -65,7 +62,7 @@ def stage_b(num_packets, payload_len, udp_port, secret_a) -> tuple[int, int]:
 
         # continues to send until acked
         while not acked:
-            sock.sendto(req.to_network_bytes(), (HOST,udp_port))
+            sock.sendto(req.to_network_bytes(), (HOST, udp_port))
             try:
                 response = sock.recv(HEADER_SIZE + STAGE_B1_EXP_PAYLOAD_LEN)
 
@@ -95,7 +92,7 @@ def stage_b(num_packets, payload_len, udp_port, secret_a) -> tuple[int, int]:
     server_header = response[:HEADER_SIZE]
     server_payload = response[HEADER_SIZE:]
 
-    if not validate_header(server_header, 2):
+    if not validate_header(server_header, SERVER_STEP):
         print("bad response...exiting - stage: B")
         exit(1)
 
@@ -103,7 +100,8 @@ def stage_b(num_packets, payload_len, udp_port, secret_a) -> tuple[int, int]:
 
     return tcp_port, secret_a
 
-def stage_c(tcp_port) -> tuple[int, int, int, str]:
+
+def stage_c(tcp_port) -> tuple[int, int, int, str, socket.socket]:
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((HOST, tcp_port))
 
@@ -117,7 +115,7 @@ def stage_c(tcp_port) -> tuple[int, int, int, str]:
     server_header = response[:HEADER_SIZE]
     server_payload = response[HEADER_SIZE:]
 
-    if not validate_header(server_header, 2):
+    if not validate_header(server_header, SERVER_STEP):
         print("bad response...exiting - stage: C")
         exit(1)
 
@@ -125,7 +123,6 @@ def stage_c(tcp_port) -> tuple[int, int, int, str]:
     num_c, len_c, secret_c, c, _, _, _ = unpack('!IIIcccc', server_payload)
 
     return num_c, len_c, secret_c, c, sock
-
 
 
 def stage_d(num_packets, payload_len, secret_c, c, sock_c):
@@ -149,13 +146,14 @@ def stage_d(num_packets, payload_len, secret_c, c, sock_c):
     server_header = response[:HEADER_SIZE]
     server_payload = response[HEADER_SIZE:]
 
-    if not validate_header(server_header, 2):
+    if not validate_header(server_header, SERVER_STEP):
         print("bad response...exiting - stage: D")
         exit(1)
 
     secret_d, = unpack('!I', server_payload)
 
     return secret_d
+
 
 def main():
 

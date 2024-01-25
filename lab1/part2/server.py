@@ -7,10 +7,12 @@ from math import ceil
 
 HOST = "attu4.cs.washington.edu"
 PORT = 12235
-STEP = 2
+CLIENT_STEP = 1
+SERVER_STEP = 2
 HEADER_SIZE = 12
 
 STAGE_A_EXPECTED_PAYLOAD_LEN = 12
+
 
 # thread handler
 def handle_client_handshake(req_bytes, sock, client_addr):
@@ -49,14 +51,14 @@ def handle_client_handshake(req_bytes, sock, client_addr):
 def check_header(header, payload_len, secret, step):
     plen, psecret, step, num = unpack('!IIHH', header)
 
-    if step != 1 or plen != payload_len or psecret != secret:
+    if step != CLIENT_STEP or plen != payload_len or psecret != secret:
         return False
     return True
 
 def start_server(port):
 
     # print("starting server:")
-    sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.bind((HOST, port))
     retries_allowed = 10
     while True:
@@ -70,15 +72,15 @@ def start_server(port):
                 print('exiting')
                 break
             sock.close()
-            sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             sock.bind((HOST, port))
     sock.close()
 
-def stage_a(req_bytes, sock, client_addr) -> tuple[int]:
+def stage_a(req_bytes, sock, client_addr) -> tuple[int] | None:
 
     header = req_bytes[:HEADER_SIZE]
     payload = req_bytes[HEADER_SIZE:]
-    if not check_header(header, STAGE_A_EXPECTED_PAYLOAD_LEN, 0, 1):
+    if not check_header(header, STAGE_A_EXPECTED_PAYLOAD_LEN, 0, CLIENT_STEP):
         return None
 
     if len(payload) != STAGE_A_EXPECTED_PAYLOAD_LEN:
@@ -97,7 +99,7 @@ def stage_a(req_bytes, sock, client_addr) -> tuple[int]:
     output_secret = random.randint(1, 100)
 
     payload = pack("!IIII", output_num, output_len, output_port, output_secret)
-    response = Response(Header(16, 0, 2), payload)
+    response = Response(Header(16, 0, SERVER_STEP), payload)
 
     msg = response.to_network_bytes()
 
@@ -105,9 +107,9 @@ def stage_a(req_bytes, sock, client_addr) -> tuple[int]:
     #print("sent message A to: ", client_addr)
     return (output_num, output_len, output_port, output_secret)
 
-def stage_b(udp_port: int, p_len_unpadded: int, num_packets: int, a_secret) -> bool:
+def stage_b(udp_port: int, p_len_unpadded: int, num_packets: int, a_secret) -> bool | None:
     #print("starting stage b")
-    sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.bind((HOST, udp_port))
     sock.settimeout(3)
     #print("bound to udp port: ", udp_port)
@@ -123,7 +125,7 @@ def stage_b(udp_port: int, p_len_unpadded: int, num_packets: int, a_secret) -> b
             header = data[:HEADER_SIZE]
             payload = data[HEADER_SIZE:]
 
-            if not check_header(header, p_len_with_id, a_secret, 1):
+            if not check_header(header, p_len_with_id, a_secret, CLIENT_STEP):
                 #print("bad header")
                 return None
 
@@ -150,7 +152,8 @@ def stage_b(udp_port: int, p_len_unpadded: int, num_packets: int, a_secret) -> b
             # ack packet
             acked_packet_id = pack('!I', packet_id)
 
-            ack_response = Response(Header(4, a_secret, 1), acked_packet_id)
+            # Note: Server sends response with client step in stage b1
+            ack_response = Response(Header(4, a_secret, CLIENT_STEP), acked_packet_id)
             sock.sendto(ack_response.to_network_bytes(), addr)
             ack_num += 1
         except:
@@ -165,7 +168,7 @@ def stage_b(udp_port: int, p_len_unpadded: int, num_packets: int, a_secret) -> b
     output_secret_b = random.randint(1, 100)
 
     payload = pack("!II", output_tcp_port, output_secret_b)
-    response = Response(Header(8, a_secret, 2), payload)
+    response = Response(Header(8, a_secret, SERVER_STEP), payload)
     sock.sendto(response.to_network_bytes(), addr)
 
     return output_tcp_port, output_secret_b
@@ -195,7 +198,7 @@ def stage_c(tcp_port, secret_b):
     output_char = chr(output_char_int).encode('utf-8')
 
     payload = pack('!IIIc', output_num, output_len, output_secret, output_char)
-    header = Header(len(payload), secret_b, 2)
+    header = Header(len(payload), secret_b, SERVER_STEP)
     res = Response(header, payload)
 
     # # bug in course staff's server implementation ??? or just padding
@@ -234,7 +237,7 @@ def stage_d(conn, client_addr, num2, len2, p_secret, c):
 
     output_secret = random.randint(1, 100)
     payload = pack('!I', output_secret)
-    header = Header(4 , p_secret, 2)
+    header = Header(4, p_secret, SERVER_STEP)
     res = Response(header, payload)
 
     conn.sendto(res.to_network_bytes(), client_addr)
